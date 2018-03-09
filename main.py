@@ -9,14 +9,14 @@ def main(argv):
     if (len(argv))
     if (argv[1] is "train"):
         if (len(argv) > 3 and argc[3] is "-x"):
-            fp.extractFiles(dataPath)
+            fp.extract_files(dataPath)
         traindataPath = argv[2]
-        dfsTrain = fp.getDataframes(dataPath) 
+        dfsTrain = fp.get_dataframes(dataPath) 
         dfTrain = dp.preprocess(dfsTrain)
         solver.train(dfsTrain) 
     elif (argv[1] is "test"):
         testdataPath = argv[2]
-        dfTest = fp.getDataframe(dataPath)
+        dfTest = fp.get_dataframe(dataPath)
         solver.test(dfTest)
     else:
         print("Please specify train/test phase and data path")

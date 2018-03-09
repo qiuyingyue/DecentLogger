@@ -9,7 +9,7 @@ sensors = ["accelerometer", "magnetic_field", "orientation",
                 "linear_acceleration", "rotation_vector", "step_counter"]
 labels = ["sitting", "standing", "walking", "laying_down"]
 #extract the data csv file from .gz
-def extractFiles(dataInRoot = "../Sessions"):
+def extract_files(dataInRoot = "../Sessions"):
     print ("Extracting", dataInRoot)
     for root, dirs, files in os.walk(dataInRoot):
         path = root.split(os.sep)
@@ -24,7 +24,7 @@ def extractFiles(dataInRoot = "../Sessions"):
                         shutil.copyfileobj(f_in, f_out)
                         print ('extract', fname, 'to' ,newfname)
                         os.remove(os.path.join(root,fname)) 
-def getDataframe(dataPath, debug = False):
+def get_dataframe(dataPath, debug = False):
     dfs = []
     label = ""
     dirname = os.path.join(dataPath,"../clean_data")
@@ -38,8 +38,10 @@ def getDataframe(dataPath, debug = False):
         df = pd.read_csv(os.path.join(dataPath,fname), header=None)
         #get label before process
         label = df.iloc[0].iloc[-1]
+        
         #process file
-        df = dp.processSingle(df, debug = debug)
+        df = dp.df_format(df, debug = debug)
+        df = dp.df_resample(df, debug = debug)
         if (df.empty):
             continue
         
@@ -75,14 +77,14 @@ def getDataframe(dataPath, debug = False):
             if not (os.path.exists(dirname)):
                 os.makedirs(dirname)'''
 
-def getDataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/", debug = False):
+def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/", debug = False):
     #read files and truncate its head and tail
     for root, dirs, files in os.walk(dataInRoot):
         path = root.split(os.sep)
         print((len(path) - 1) * '---', os.path.basename(root))
         df_list = []
         if (os.path.basename(root) == "data"):
-            df, label = getDataframe(root, debug)
+            df, label = get_dataframe(root, debug)
             df_list.append(df)
     return df_list
     '''if (label in df_dict):
@@ -99,5 +101,5 @@ def getDataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/", de
 
                  
 #extractFiles()
-getDataframes(debug = False)
+get_dataframes(debug = False)
 #getDataframe("../Sessions/14442D5DF8A8DC4_Mon_Feb_26_13-37_2018_PST/data",debug = True)

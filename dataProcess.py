@@ -6,18 +6,17 @@ label_dict = {"sitting": 0, "standing": 1, "walking": 2, "laying_down": 3}
 
 def preprocess(dfs, method = "slides window"):
     if (method is "slides window"):
-        pass
-def processSingle(df, withlabel = True, debug = False):
-    df = formatDataframe(df, debug = debug)
-    df = resample(df, debug = debug)
-    return df
+        for df in dfs:
+            df  = slidingWindow(df, win_size)
+def sliding_window(df,a ):
+    pass
 #change label from string to integer
-def changeLabel(df, inplace = True):
+def change_label(df, inplace = True):
     for label in label_dict:
         df.replace(to_replace=label, value=label_dict[label], inplace=inplace)
     return df
 #change the format of the dataframe
-def formatDataframe(df, inplace = True, debug = False, withlabel = True):
+def df_format(df, inplace = True, debug = False, withlabel = True):
     #delete unused column 
     if (withlabel):
         df.drop(df.columns[-2], axis=1, inplace=inplace)
@@ -33,9 +32,9 @@ def formatDataframe(df, inplace = True, debug = False, withlabel = True):
     df.set_index("time", inplace=inplace)
     
     #truncate start and end
-    newStart = int(df.index[0]) + 5 * 1000
-    newEnd = int(df.index[-1]) - 8 * 1000
-    df = df[(df.index > newStart) & (df.index < newEnd)]
+    start = int(df.index[0]) + 5 * 1000
+    end = int(df.index[-1]) - 8 * 1000
+    df = df[(df.index > start) & (df.index < end)]
 
     #change index type to DateTimeIndex
     df.index = pd.to_datetime(df.index, unit='ms')
@@ -45,7 +44,7 @@ def formatDataframe(df, inplace = True, debug = False, withlabel = True):
 
 #resample the data according to the frequency
 #unit of freq: ms
-def resample(df, freq = 10, inplace = True, debug = False):
+def df_resample(df, freq = 10, inplace = True, debug = False):
     if (df.empty):
         return df
     if (debug):
@@ -87,7 +86,7 @@ def resample(df, freq = 10, inplace = True, debug = False):
     return df
 
 
-def draw(df):
+def df_draw(df):
     for col in df.columns:
         df.plot(x = df.index, y = col,title = col)
         plt.show()
