@@ -4,6 +4,7 @@ import gzip
 import pandas as pd
 import numpy as np 
 import dataProcess as dp
+import time
 from GLOBAL import sensors, labels
 #extract the data csv file from .gz
 def extract_files(dataInRoot = "../Sessions"):
@@ -21,18 +22,18 @@ def extract_files(dataInRoot = "../Sessions"):
                         shutil.copyfileobj(f_in, f_out)
                         print ('extract', fname, 'to' ,newfname)
                         os.remove(os.path.join(root,fname)) 
-def get_dataframe(dataPath, debug = False, withlabel = True):
+def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withlabel = True):
     df_dict = {}
     label = ""
-    dirname = os.path.join(dataPath,"../clean_data")
-    if not (os.path.exists(dirname)):
-        os.makedirs(dirname)
-    for fname in os.listdir(dataPath):
+    cnt_debug = 1
+    if not (os.path.exists(dataOutRoot)):
+        os.makedirs(dataOutRoot)
+    for fname in os.listdir(dataInRoot):
         if (not (fname.endswith(".csv"))) or ("65539" in fname):
             continue
         print (fname)
         #read file
-        df = pd.read_csv(os.path.join(dataPath,fname), header=None)
+        df = pd.read_csv(os.path.join(dataInRoot,fname), header=None)
         #get label and sensor before process
         label = df.iloc[0].iloc[-1]
         sensor = fname.split('.')[-2]
@@ -47,7 +48,7 @@ def get_dataframe(dataPath, debug = False, withlabel = True):
         for sensor in sensors:
             if (sensor in fname) and debug:
                 print (label, sensor)
-                fname = os.path.join(dirname,"reconstructed.{}.{}.data.csv".format(label, sensor))
+                fname = os.path.join(dataOutRoot,"{}.resample.{}.{}.data.csv".format(int(time.time()), label, sensor))
                 df.to_csv(fname)
                 print("written to ", fname)
 
@@ -72,8 +73,8 @@ def get_dataframe(dataPath, debug = False, withlabel = True):
     #write to files
     print(label, len(dfs))
     dp.change_label(df_concat)    
-    fname = "reconstructed.{}.data.csv".format(label)
-    df_concat.to_csv(os.path.join(dirname,"../clean_data",fname))
+    fname = "{}.resample.{}.data.csv".format(int(time.time()), label)
+    df_concat.to_csv(os.path.join(dataOutRoot, fname))
     return df_concat, label
 #reorder files according to their labels
 '''def reorderFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
@@ -83,20 +84,20 @@ def get_dataframe(dataPath, debug = False, withlabel = True):
         dataframes[label]={}
         for sensor in sensors:
             dataframes[label][f]=[]
-            dirname = os.path.join(dataOutRoot,label,f)
-            #if (os.path.exists(dirname)):
-            #   os.remove(dirname)
-            if not (os.path.exists(dirname)):
-                os.makedirs(dirname)'''
+            dataOutRoot = os.path.join(dataOutRoot,label,f)
+            #if (os.path.exists(dataOutRoot)):
+            #   os.remove(dataOutRoot)
+            if not (os.path.exists(dataOutRoot)):
+                os.makedirs(dataOutRoot)'''
 
-def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/", debug = False):
+def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "clean_data/", debug = False):
     #read files and truncate its head and tail
     for root, dirs, files in os.walk(dataInRoot):
         path = root.split(os.sep)
         print((len(path) - 1) * '---', os.path.basename(root))
         df_list = []
         if (os.path.basename(root) == "data"):
-            df, label = get_dataframe(root, debug)
+            df, label = get_dataframe(root, dataOutRoot, debug)
             df_list.append(df)
     return df_list
     '''if (label in df_dict):

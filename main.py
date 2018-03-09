@@ -1,8 +1,6 @@
 import sys
 import fileProcess as fp 
-#import XXsolver 
-import solver #example
-#import SVMsolver
+import solver
 import pandas as pd
 def main(argv):
     # My code here
@@ -13,7 +11,7 @@ def main(argv):
         traindataPath = argv[2]
         dfsTrain = fp.get_dataframes(dataPath) 
         dfTrain = dp.preprocess(dfsTrain)
-        solver.train(dfsTrain) 
+        solver.train(dfsTrain, method = "SVM") 
     elif (argv[1] is "test"):
         testdataPath = argv[2]
         dfTest = fp.get_dataframe(dataPath)

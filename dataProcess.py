@@ -5,6 +5,7 @@ import time
 
 from GLOBAL import label_dict
 
+#dfs: an array of dataframe
 def preprocess(dfs, method = "slides window"):
     if (method is "slides window"):
         dfs = []
@@ -16,7 +17,7 @@ def preprocess(dfs, method = "slides window"):
 
 #unit of win_size is seconds
 #unit of freq is ms
-#step is the overlapping ratio of consecutive windows
+#step: the overlapping ratio of consecutive windows
 def sliding_window(df, win_size = 5, freq = 10, step = 0.5, withlabel = True):
     label = df.iloc[0].iloc[-1]
 
