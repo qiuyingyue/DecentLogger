@@ -85,7 +85,7 @@ def df_resample(df, freq = 10, inplace = True, debug = False):
     if (df.empty):
         return df
     if (debug):
-        print("\Before resample:\n", df.iloc[0:10])
+        print("\nBefore resample:\n", df.iloc[0:10])
         df.to_csv("original.csv")
     #get label
     label = df.iloc[0].iloc[-1]
@@ -116,7 +116,7 @@ def df_resample(df, freq = 10, inplace = True, debug = False):
 
     #debug info
     if (debug):
-        print("\Finish interpolation:\n")
+        print("\nFinish interpolation:\n")
         print(df.iloc[0:10])
         print("Finish interpolation:", time.clock() - t_start, "seconds")
         df.to_csv("interpolation.csv")
@@ -126,7 +126,7 @@ def df_resample(df, freq = 10, inplace = True, debug = False):
 def df_draw(df):
     for col in df.columns:
         df.plot(x = df.index, y = col,title = col)
-        plt.show()
+        #plt.show()
 #test()
 #fillData(df, start, end)
 
