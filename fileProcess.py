@@ -82,7 +82,7 @@ def reconstructFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/")
         df_dict = {}
         if (os.path.basename(root) == "data"):
             df, label = getDataFrame(root)
-            if not(label in df_dict):
+            if (label in df_dict):
                 df_dict[label]=[]
             df_dict[label].append(df)
     df_total = []

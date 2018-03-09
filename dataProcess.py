@@ -8,16 +8,16 @@ def processSingle(df):
     df = resample(df)
     return df
 
-def setIndex(df, debug = False):
+def setIndex(df, debug = False, inplace=True):
     #delete unused column 
-    df.drop(df.columns[-2], axis=1, inplace=True)
+    df.drop(df.columns[-2], axis=1, inplace=inplace)
     #reassisn index and column names
     newColNames = list(df.columns.values)
     newColNames[0] = "time"
     newColNames[-1] = "label"
     df.columns = newColNames
     #print(df.head())
-    df.set_index("time", inplace=True)
+    df.set_index("time", inplace=inplace)
     #truncate start and end
     newStart = int(df.index[0]) + 5 * 1000
     newEnd = int(df.index[-1]) - 8 * 1000
