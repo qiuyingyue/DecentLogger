@@ -4,7 +4,7 @@ import gzip
 import pandas as pd
 import numpy as np 
 import dataProcess as dp
-filenames = ["accelerometer", "magnetic_field", "orientation", 
+sensors = ["accelerometer", "magnetic_field", "orientation", 
                 "gyroscope", "light", "gravity",
                 "linear_acceleration", "rotation_vector", "step_counter"]
 labels = ["sitting", "standing", "walking", "laying_down"]
@@ -31,33 +31,35 @@ def getDataframe(dataPath, debug = False):
     if not (os.path.exists(dirname)):
         os.makedirs(dirname)
     for fname in os.listdir(dataPath):
-        
         if (not (fname.endswith(".csv"))) or ("65539" in fname):
             continue
         print (fname)
         #read file
         df = pd.read_csv(os.path.join(dataPath,fname), header=None)
-        label = df.iloc[0].iloc[-1]#get label before process
-        df = dp.processSingle(df)#process file
+        #get label before process
+        label = df.iloc[0].iloc[-1]
+        #process file
+        df = dp.processSingle(df, debug = debug)
         if (df.empty):
             continue
         
         #write to files
-        for f in filenames:
-            if (f in fname) and debug:
-                print (label,f)
-                fname = os.path.join(dirname,"reconstructed.{}.{}.data.csv".format(label, f))
+        for sensor in sensors:
+            if (sensor in fname) and debug:
+                print (label, sensor)
+                fname = os.path.join(dirname,"reconstructed.{}.{}.data.csv".format(label, sensor))
                 df.to_csv(fname)
                 print("written to ", fname)
         df.drop(df.columns[-1], axis=1, inplace=True)#drop label before concat
         dfs.append(df)
+    #merge files with different sensors into one file
     df_concat = pd.concat(dfs, axis=1, join='inner') 
-    df_concat["label"] = pd.Series([label]*len(df.index), index = df_concat.index) 
-    print(len(dfs))
-    print(label)
+    df_concat["label"] = pd.Series([label]*len(df_concat.index), index = df_concat.index) 
+    print(label, len(dfs))
     fname = "reconstructed.{}.data.csv".format(label)
     
     df_concat.to_csv(os.path.join(dirname,"../clean_data",fname))
+    dp.changeLabel(df_concat)
     return df_concat, label
 #reorder files according to their labels
 '''def reorderFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
@@ -65,7 +67,7 @@ def getDataframe(dataPath, debug = False):
     dataframes = {}
     for label in labels:
         dataframes[label]={}
-        for f in filenames:
+        for sensor in sensors:
             dataframes[label][f]=[]
             dirname = os.path.join(dataOutRoot,label,f)
             #if (os.path.exists(dirname)):
@@ -73,14 +75,14 @@ def getDataframe(dataPath, debug = False):
             if not (os.path.exists(dirname)):
                 os.makedirs(dirname)'''
 
-def getDataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
+def getDataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/", debug = False):
     #read files and truncate its head and tail
     for root, dirs, files in os.walk(dataInRoot):
         path = root.split(os.sep)
         print((len(path) - 1) * '---', os.path.basename(root))
         df_list = []
         if (os.path.basename(root) == "data"):
-            df, label = getDataFrame(root)
+            df, label = getDataframe(root, debug)
             df_list.append(df)
     return df_list
     '''if (label in df_dict):
@@ -97,5 +99,5 @@ def getDataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
 
                  
 #extractFiles()
-getDataframes()
-getDataFrame()
+getDataframes(debug = False)
+#getDataframe("../Sessions/14442D5DF8A8DC4_Mon_Feb_26_13-37_2018_PST/data",debug = True)
