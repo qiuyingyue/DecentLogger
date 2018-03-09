@@ -6,11 +6,11 @@ import time
 from GLOBAL import label_dict
 
 #dfs: an array of dataframe
-def preprocess(dfs, method = "slides window"):
+def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5):
     if (method is "slides window"):
         dfs = []
         for df in dfs:
-            df  = sliding_window(df)
+            df  = sliding_window(df, win_size = win_size, step = step)
             dfs.append(df)
         df_concat = pd.concat(dfs)
 
