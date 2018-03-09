@@ -15,7 +15,7 @@ def main(argv):
         NNsolver.train(dfsTrain)
     elif (argv[1] is "test"):
         testdataPath = argv[2]
-        dfTest = fp.getDataframe(data)
+        dfTest = fp.getDataframe(dataPath)
         NNsolver.test(dfTest)
     else:
         print("Please specify train/test phase and data path")
