@@ -4,7 +4,7 @@ import time
 #import matplotlib.pyplot as plt
 
 from GLOBAL import label_dict
-
+###########PUBLIC INTERFACE##############
 #dfs: an array of dataframe
 def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5):
     if (method is "slides window"):
@@ -16,6 +16,8 @@ def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5):
         return df_concat
 
 
+
+###########PRIVATE INTERFACE################
 #unit of win_size is seconds
 #unit of freq is ms
 #step: the overlapping ratio of consecutive windows
