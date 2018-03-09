@@ -12,7 +12,7 @@ def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5):
         for df in dfs:
             df  = sliding_window(df, win_size = win_size, step = step)
             dfs_new.append(df)
-        df_concat = pd.concat(dfs_newls)
+        df_concat = pd.concat(dfs_new)
         return df_concat
 
 
