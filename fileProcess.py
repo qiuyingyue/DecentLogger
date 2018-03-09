@@ -36,8 +36,7 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
         df = pd.read_csv(os.path.join(dataInRoot,fname), header=None)
         #get label and sensor before process
         label = df.iloc[0].iloc[-1]
-        sensor = fname.split('.')[-2]
-
+        sensor = fname.split('.')[-3]
         #process file
         df = dp.df_format(df, debug = debug)
         df = dp.df_resample(df, debug = debug)
@@ -45,10 +44,10 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
             continue
         
         #write to files
-        for sensor in sensors:
-            if (sensor in fname) and debug:
-                print (label, sensor)
-                fname = os.path.join(dataOutRoot,"{}.resample.{}.{}.data.csv".format(int(time.time()), label, sensor))
+        for s in sensors:
+            if (s in fname) and debug:
+                print (label, s)
+                fname = os.path.join(dataOutRoot,"{}.resample.{}.{}.data.csv".format(int(time.time()), label, s))
                 df.to_csv(fname)
                 print("written to ", fname)
 
@@ -58,7 +57,10 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
 
         df_dict[sensor] = df
         
-    #ensure the order of sensor files    
+    #ensure the order of sensor files  
+    print("sensors", sensors)
+
+    print("df_dict", df_dict.keys())  
     dfs = []
     for sensor in sensors:
         if (sensor in df_dict):
