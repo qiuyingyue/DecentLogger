@@ -25,7 +25,7 @@ def extract_files(dataInRoot = "../Sessions"):
                         print ('extract', fname, 'to' ,newfname)
                         os.remove(os.path.join(root,fname)) 
 def get_dataframe(dataPath, debug = False):
-    dfs = []
+    df_dict = {}
     label = ""
     dirname = os.path.join(dataPath,"../clean_data")
     if not (os.path.exists(dirname)):
@@ -36,9 +36,10 @@ def get_dataframe(dataPath, debug = False):
         print (fname)
         #read file
         df = pd.read_csv(os.path.join(dataPath,fname), header=None)
-        #get label before process
+        #get label and sensor before process
         label = df.iloc[0].iloc[-1]
-        
+        sensor = fname.split('.')[-2]
+
         #process file
         df = dp.df_format(df, debug = debug)
         df = dp.df_resample(df, debug = debug)
@@ -53,7 +54,14 @@ def get_dataframe(dataPath, debug = False):
                 df.to_csv(fname)
                 print("written to ", fname)
         df.drop(df.columns[-1], axis=1, inplace=True)#drop label before concat
-        dfs.append(df)
+
+        df_dict[sensor] = df
+        
+    #ensure the order of sensor files    
+    dfs = []
+    for sensor in sensors:
+        if (sensor in df_dict):
+            dfs.append(df_dict[sensor])
     #merge files with different sensors into one file
     df_concat = pd.concat(dfs, axis=1, join='inner') 
     df_concat["label"] = pd.Series([label]*len(df_concat.index), index = df_concat.index) 
@@ -61,7 +69,7 @@ def get_dataframe(dataPath, debug = False):
     fname = "reconstructed.{}.data.csv".format(label)
     
     df_concat.to_csv(os.path.join(dirname,"../clean_data",fname))
-    dp.changeLabel(df_concat)
+    dp.change_label(df_concat)
     return df_concat, label
 #reorder files according to their labels
 '''def reorderFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
