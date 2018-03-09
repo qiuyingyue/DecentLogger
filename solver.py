@@ -9,7 +9,7 @@ def test():
 
 
 
-# only for your own testing
+# only for unit testing
 def main():
     pass
 main()

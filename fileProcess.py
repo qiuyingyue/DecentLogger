@@ -21,7 +21,7 @@ def extract_files(dataInRoot = "../Sessions"):
                         shutil.copyfileobj(f_in, f_out)
                         print ('extract', fname, 'to' ,newfname)
                         os.remove(os.path.join(root,fname)) 
-def get_dataframe(dataPath, debug = False):
+def get_dataframe(dataPath, debug = False, withlabel = True):
     df_dict = {}
     label = ""
     dirname = os.path.join(dataPath,"../clean_data")
@@ -50,7 +50,10 @@ def get_dataframe(dataPath, debug = False):
                 fname = os.path.join(dirname,"reconstructed.{}.{}.data.csv".format(label, sensor))
                 df.to_csv(fname)
                 print("written to ", fname)
-        df.drop(df.columns[-1], axis=1, inplace=True)#drop label before concat
+
+        #drop label before concat
+        if (withlabel):
+            df.drop(df.columns[-1], axis=1, inplace=True)
 
         df_dict[sensor] = df
         
@@ -61,12 +64,16 @@ def get_dataframe(dataPath, debug = False):
             dfs.append(df_dict[sensor])
     #merge files with different sensors into one file
     df_concat = pd.concat(dfs, axis=1, join='inner') 
-    df_concat["label"] = pd.Series([label]*len(df_concat.index), index = df_concat.index) 
-    print(label, len(dfs))
-    fname = "reconstructed.{}.data.csv".format(label)
+
+    #add back label
+    if (withlabel):
+        df_concat["label"] = pd.Series([label]*len(df_concat.index), index = df_concat.index) 
     
+    #write to files
+    print(label, len(dfs))
+    dp.change_label(df_concat)    
+    fname = "reconstructed.{}.data.csv".format(label)
     df_concat.to_csv(os.path.join(dirname,"../clean_data",fname))
-    dp.change_label(df_concat)
     return df_concat, label
 #reorder files according to their labels
 '''def reorderFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
@@ -104,7 +111,7 @@ def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/", d
         
                 
 
-                 
+#For unit testing                
 #extractFiles()
 get_dataframes(debug = False)
 #getDataframe("../Sessions/14442D5DF8A8DC4_Mon_Feb_26_13-37_2018_PST/data",debug = True)
