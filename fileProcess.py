@@ -4,10 +4,7 @@ import gzip
 import pandas as pd
 import numpy as np 
 import dataProcess as dp
-sensors = ["accelerometer", "magnetic_field", "orientation", 
-                "gyroscope", "light", "gravity",
-                "linear_acceleration", "rotation_vector", "step_counter"]
-labels = ["sitting", "standing", "walking", "laying_down"]
+from GLOBAL import sensors, labels
 #extract the data csv file from .gz
 def extract_files(dataInRoot = "../Sessions"):
     print ("Extracting", dataInRoot)

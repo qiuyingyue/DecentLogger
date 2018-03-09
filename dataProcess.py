@@ -2,13 +2,17 @@ import pandas as pd
 import numpy as np
 import time
 #import matplotlib.pyplot as plt
-label_dict = {"sitting": 0, "standing": 1, "walking": 2, "laying_down": 3}
+
+from GLOBAL import label_dict
 
 def preprocess(dfs, method = "slides window"):
     if (method is "slides window"):
         for df in dfs:
-            df  = slidingWindow(df, win_size)
-def sliding_window(df,a ):
+            df  = sliding_window(df, win_size)
+
+#unit of window size is seconds
+#step is the overlapping of consecutive windows
+def sliding_window(df, win_size = 5, step = 0.5 ):
     pass
 #change label from string to integer
 def change_label(df, inplace = True):
