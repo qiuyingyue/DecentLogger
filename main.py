@@ -1,7 +1,7 @@
 import sys
-import fileProcess as fp
+import fileProcess as fp 
 #import XXsolver 
-import NNsolver #example
+import solver #example
 #import SVMsolver
 import pandas as pd
 def main(argv):
@@ -12,11 +12,12 @@ def main(argv):
             fp.extractFiles(dataPath)
         traindataPath = argv[2]
         dfsTrain = fp.getDataframes(dataPath) 
-        NNsolver.train(dfsTrain)
+        dfTrain = dp.preprocess(dfsTrain)
+        solver.train(dfsTrain) 
     elif (argv[1] is "test"):
         testdataPath = argv[2]
         dfTest = fp.getDataframe(dataPath)
-        NNsolver.test(dfTest)
+        solver.test(dfTest)
     else:
         print("Please specify train/test phase and data path")
         sys.exit(0)

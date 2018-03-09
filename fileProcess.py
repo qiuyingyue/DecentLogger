@@ -24,7 +24,7 @@ def extractFiles(dataInRoot = "../Sessions"):
                         shutil.copyfileobj(f_in, f_out)
                         print ('extract', fname, 'to' ,newfname)
                         os.remove(os.path.join(root,fname)) 
-def getDataFrame(dataPath="../Sessions/14442D5DF8A8DC4_Fri_Feb_16_21-31_2018_PST/data"):
+def getDataFrame(dataPath, debug = False):
     dfs = []
     label = ""
     dirname = os.path.join(dataPath,"../clean_data")
@@ -44,7 +44,7 @@ def getDataFrame(dataPath="../Sessions/14442D5DF8A8DC4_Fri_Feb_16_21-31_2018_PST
         
         #write to files
         for f in filenames:
-            if (f in fname):
+            if (f in fname) and debug:
                 print (label,f)
                 fname = os.path.join(dirname,"reconstructed.{}.{}.data.csv".format(label, f))
                 df.to_csv(fname)
@@ -77,20 +77,20 @@ def reconstructFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/")
     #read files and truncate its head and tail
     for root, dirs, files in os.walk(dataInRoot):
         path = root.split(os.sep)
-        print (path)
         print((len(path) - 1) * '---', os.path.basename(root))
-        df_dict = {}
+        df_list = []
         if (os.path.basename(root) == "data"):
             df, label = getDataFrame(root)
-            if (label in df_dict):
-                df_dict[label]=[]
-            df_dict[label].append(df)
-    df_total = []
+            df_list.append(df)
+    return df_list
+    '''if (label in df_dict):
+        df_dict[label]=[]
+    df_dict[label].append(df)'''
+    '''df_total = []
     for label in labels:
         df_concat = pd.concat(df_dict[label])
-
         df_total.append(df_concat)
-    return pd.concat(df_total)
+    return pd.concat(df_total)'''
 
         
                 
