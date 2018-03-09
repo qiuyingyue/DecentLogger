@@ -24,7 +24,7 @@ def extractFiles(dataInRoot = "../Sessions"):
                         shutil.copyfileobj(f_in, f_out)
                         print ('extract', fname, 'to' ,newfname)
                         os.remove(os.path.join(root,fname)) 
-def getDataFrame(dataPath, debug = False):
+def getDataframe(dataPath, debug = False):
     dfs = []
     label = ""
     dirname = os.path.join(dataPath,"../clean_data")
@@ -73,7 +73,7 @@ def getDataFrame(dataPath, debug = False):
             if not (os.path.exists(dirname)):
                 os.makedirs(dirname)'''
 
-def reconstructFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
+def getDataframes(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
     #read files and truncate its head and tail
     for root, dirs, files in os.walk(dataInRoot):
         path = root.split(os.sep)
@@ -97,5 +97,5 @@ def reconstructFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/")
 
                  
 #extractFiles()
-reconstructFiles()
+getDataframes()
 getDataFrame()
