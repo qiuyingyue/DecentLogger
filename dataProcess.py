@@ -8,11 +8,12 @@ from GLOBAL import label_dict
 #dfs: an array of dataframe
 def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5):
     if (method is "slides window"):
-        dfs = []
+        dfs_new = []
         for df in dfs:
             df  = sliding_window(df, win_size = win_size, step = step)
-            dfs.append(df)
-        df_concat = pd.concat(dfs)
+            dfs_new.append(df)
+        df_concat = pd.concat(dfs_new)
+        return df_concat
 
 
 #unit of win_size is seconds
