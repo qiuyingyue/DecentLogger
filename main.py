@@ -4,17 +4,19 @@ import solver
 import pandas as pd
 def main(argv):
     # My code here
-    if (len(argv))
-    if (argv[1] is "train"):
-        if (len(argv) > 3 and argc[3] is "-x"):
-            fp.extract_files(dataPath)
+    print(argv)
+    
+    if (argv[1] == "-train"):
         traindataPath = argv[2]
-        dfsTrain = fp.get_dataframes(dataPath) 
-        solver.train(dfsTrain, method = "SVM") 
-    elif (argv[1] is "test"):
+        dfsTrain = fp.get_dataframes(traindataPath) 
+        solver.train(dfsTrain, method = "DNN") 
+    elif (argv[1] == "-test"):
         testdataPath = argv[2]
-        dfTest = fp.get_dataframe(dataPath)
-        solver.test(dfTest)
+        dfsTest = fp.get_dataframes(testdataPath)
+        solver.test(dfsTest)
+    elif (argv[1] == "-extract"):
+        dataPath = argv[2] 
+        fp.extract_files(dataPath)
     else:
         print("Please specify train/test phase and data path")
         sys.exit(0)
