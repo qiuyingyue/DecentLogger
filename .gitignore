@@ -9,6 +9,5 @@ ehthumbs.db
 Thumbs.db
 *.pyc
 model
-train_data
-test_data
+clean_data
 __pycache__
