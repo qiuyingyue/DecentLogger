@@ -6,8 +6,8 @@ import time
 from GLOBAL import label_dict
 ###########PUBLIC INTERFACE##############
 #dfs: an array of dataframe
-def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5):
-    if (method is "slides window"):
+def preprocess(dfs, method = "slides window", win_size = 3, step = 0.2):
+    if (method == "slides window"):
         dfs_new = []
         for df in dfs:
             df  = sliding_window(df, win_size = win_size, step = step)
@@ -18,28 +18,57 @@ def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5):
 
 
 ###########PRIVATE INTERFACE################
+def prepare_nn(df, win_size = 3, freq = 10, step = 0.8, withlabel = True):
+    #drop label before concat
+    if (withlabel):
+        label = df.iloc[0].iloc[-1]
+        df.drop(df.columns[-1], axis=1, inplace=True) 
+    #calculate parameters
+    total_rows = len(df.index)
+    win_rows = win_size * (1000 / freq)
+    print (type(df.columns))
+    new_columns = df.columns * win_rows
+    step_rows = win_rows * step
+
+    for i in range(total_rows, step_rows):
+        np_matrix = df[i, i + step_rows].values
+
+    if (withlabel):
+        pass
+        
 #unit of win_size is seconds
 #unit of freq is ms
-#step: the overlapping ratio of consecutive windows
-def sliding_window(df, win_size = 5, freq = 10, step = 0.5, withlabel = True):
-    label = df.iloc[0].iloc[-1]
+#step: the non-overlapping ratio of consecutive windows
+def sliding_window(df, win_size = 3, freq = 10, step = 0.2, withlabel = True):
 
     #drop label before concat
     if (withlabel):
+        label = df.iloc[0].iloc[-1]
         df.drop(df.columns[-1], axis=1, inplace=True)
 
     #calculate parameters
     total_rows = len(df.index)
-    win_rows = win_size * (1000 / freq)
-    new_columns = df.columns * win_rows
-    step_rows = win_rows * step
+    win_rows = int(win_size * (1000 / freq))
+    #print ("win_rows",win_rows)
+    new_columns = list(df.columns.values) * win_rows
+    step_rows = int(win_rows * step)
 
     #create new dataframe
     np_rows = []
-    for i in range(total_rows, step_rows):
-        np_row = [df[i, i + step_rows].values.flatten()]
+    #print ("total_rows:",total_rows)
+    #print ("step_rows:",step_rows)
+    
+    for i in range(0, total_rows, step_rows):
+        
+        j = i + win_rows
+        if (j >= total_rows):
+            #print (i, i + win_rows)
+            break
+        np_row = [df.iloc[i: j].values.flatten()]
+        #print(np_row[0].shape)
         np_rows.append(np_row)
     matrix = np.concatenate(np_rows)
+    print (matrix.shape)
     df_new = pd.DataFrame(matrix, columns = new_columns)
     
     #add back label

@@ -2,8 +2,6 @@ import tensorflow as tf
 
 def cnn_model_fn(features, labels, mode):
   """Model function for CNN."""
-  rows = df.index
-  cols = 20
   # Input Layer
   input_layer = tf.reshape(features["x"], [-1, rows, cols, 1])
 
