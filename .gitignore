@@ -9,5 +9,5 @@ ehthumbs.db
 Thumbs.db
 *.pyc
 model
-clean_data
+
 __pycache__
