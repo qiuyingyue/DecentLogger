@@ -34,7 +34,7 @@ def main():
             df = pd.read_csv(path + '/' + f, index_col = 0)
             dfs.append(df)
     print (len(dfs))
-    train(dfs, "DNN") 
+    train(dfs, "CNN") 
     path = "test_data"
     dfs = []
     for f in os.listdir(path):
@@ -43,7 +43,7 @@ def main():
             dfs.append(df)
     print (len(dfs))
 
-    test(dfs, "DNN")   
+    test(dfs, "CNN")   
     
     # call preprocess function with needed parameters
     # def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5)
