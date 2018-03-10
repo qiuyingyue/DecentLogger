@@ -3,7 +3,7 @@
 import os
 import dataProcess as dp
 import pandas as pd
-import DNNsolver 
+import CNN 
 #public interface
 def train(dfs, method):
     if (method == "SVM"): #example
@@ -11,7 +11,7 @@ def train(dfs, method):
         print(df.head())
     elif (method == "DNN"):
         train_data, train_label = dp.preprocess(dfs, method="dnn")
-        DNNsolver.train(train_data, train_label)
+        CNN.train(train_data, train_label)
         
     
 def test(dfs, method):
@@ -20,7 +20,7 @@ def test(dfs, method):
         print(df.head())
     elif (method == "DNN"):
         test_data, test_label = dp.preprocess(dfs, method="dnn")
-        DNNsolver.evaluate(test_data, test_label)
+        CNN.evaluate(test_data, test_label)
 
 
 
