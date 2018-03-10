@@ -7,4 +7,5 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-.pyc
+*.pyc
+__pycache__
