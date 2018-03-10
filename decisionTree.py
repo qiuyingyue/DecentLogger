@@ -5,7 +5,7 @@ import classifierHelp as help
 
 def decisionTree():
     x, y  = help.generateData()
-    train_x, test_x, train_y, test_y = train_test_split(x, y, test_size = 0.33, random_state = 42)
+    train_x, test_x, train_y, test_y = train_test_split(x, y, test_size = 0.33)
 
     ## use decisionTree to classify dataset
     # rbf is the default kernal: Gaussin kernal, ovr means one vs rest
