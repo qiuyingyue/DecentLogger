@@ -1,0 +1,6 @@
+
+*.pyc
+.DS_Store
+__pycache__/dataProcess.cpython-36.pyc
+__pycache__/GLOBAL.cpython-36.pyc
+.DS_Store

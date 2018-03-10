@@ -6,40 +6,64 @@ import time
 from GLOBAL import label_dict
 ###########PUBLIC INTERFACE##############
 #dfs: an array of dataframe
-def preprocess(dfs, method = "slides window", win_size = 3, step = 0.2):
+#unit of win_size is seconds
+#unit of freq is ms
+#step: the non-overlapping ratio of consecutive windows
+def preprocess(dfs, method = "slides window", win_size = 3, step = 0.2, withlabel = True):
     if (method == "slides window"):
         dfs_new = []
         for df in dfs:
-            df  = sliding_window(df, win_size = win_size, step = step)
+            df  = sliding_window(df, win_size = win_size, step = step, withlabel = withlabel)
             dfs_new.append(df)
         df_concat = pd.concat(dfs_new)
+        print ("total shape:", df_concat.values.shape)
         return df_concat
+    elif (method == "dnn"):
+        list_data = []
+        list_labels = []
+        for df in dfs:
+            data, labels = prepare_nn(df, win_size = 3, step = 0.2, withlabel = withlabel)
+            list_data.append(data)
+            list_labels.append(labels)
+        train_data = np.concatenate(list_data)
+        train_labels = np.concatenate(list_labels)
+        return train_data, train_labels
 
 
 
 ###########PRIVATE INTERFACE################
-def prepare_nn(df, win_size = 3, freq = 10, step = 0.8, withlabel = True):
+def prepare_nn(df, win_size, step, freq = 10,  withlabel = True):
     #drop label before concat
     if (withlabel):
         label = df.iloc[0].iloc[-1]
+        
         df.drop(df.columns[-1], axis=1, inplace=True) 
     #calculate parameters
     total_rows = len(df.index)
-    win_rows = win_size * (1000 / freq)
-    print (type(df.columns))
-    new_columns = df.columns * win_rows
-    step_rows = win_rows * step
+    win_rows = int(win_size * (1000 / freq))
+    step_rows = int(win_rows * step)
 
-    for i in range(total_rows, step_rows):
-        np_matrix = df[i, i + step_rows].values
+    np_matrixs = []
+    for i in range(0, total_rows, step_rows):
+        if (i + win_rows >= total_rows):
+            break
+        np_matrix = df[i: i + step_rows].values
+        np_matrixs.append(np_matrix)
+    train_data = np.stack(np_matrixs)
 
+    dim = (len(np_matrixs), len(label_dict))    
+    train_labels = np.zeros(dim)
     if (withlabel):
-        pass
+        print(train_labels.shape, label)
+        for row in train_labels:
+            row[int(label)] = 1
+    return train_data, train_labels
+    
         
 #unit of win_size is seconds
 #unit of freq is ms
 #step: the non-overlapping ratio of consecutive windows
-def sliding_window(df, win_size = 3, freq = 10, step = 0.2, withlabel = True):
+def sliding_window(df, win_size = 3, step = 0.2, freq = 10, withlabel = True):
 
     #drop label before concat
     if (withlabel):
@@ -49,9 +73,10 @@ def sliding_window(df, win_size = 3, freq = 10, step = 0.2, withlabel = True):
     #calculate parameters
     total_rows = len(df.index)
     win_rows = int(win_size * (1000 / freq))
+    step_rows = int(win_rows * step)
     #print ("win_rows",win_rows)
     new_columns = list(df.columns.values) * win_rows
-    step_rows = int(win_rows * step)
+    
 
     #create new dataframe
     np_rows = []
@@ -62,13 +87,12 @@ def sliding_window(df, win_size = 3, freq = 10, step = 0.2, withlabel = True):
         
         j = i + win_rows
         if (j >= total_rows):
-            #print (i, i + win_rows)
             break
-        np_row = [df.iloc[i: j].values.flatten()]
+        np_row = df.iloc[i: j].values.flatten()
         #print(np_row[0].shape)
         np_rows.append(np_row)
-    matrix = np.concatenate(np_rows)
-    print (matrix.shape)
+    matrix = np.stack(np_rows)
+    print ("shape:",matrix.shape)
     df_new = pd.DataFrame(matrix, columns = new_columns)
     
     #add back label
@@ -84,7 +108,7 @@ def change_label(df, inplace = True):
         df.replace(to_replace=label, value=label_dict[label], inplace=inplace)
     return df
 #change the format of the dataframe
-def df_format(df, inplace = True, debug = False, withlabel = True):
+def df_format(df, sensor, inplace = True, debug = False, withlabel = True):
     #delete unused column 
     if (withlabel):
         df.drop(df.columns[-2], axis=1, inplace=inplace)
@@ -94,6 +118,8 @@ def df_format(df, inplace = True, debug = False, withlabel = True):
     #reset index and column names
     new_columns = list(df.columns.values)
     new_columns[0] = "time"
+    for i in range(1, len(new_columns)):
+        new_columns[i] = sensor + str(new_columns[i])
     if (withlabel):
         new_columns[-1] = "label"
     df.columns = new_columns
@@ -154,10 +180,5 @@ def df_resample(df, freq = 10, inplace = True, debug = False):
     return df
 
 
-def df_draw(df):
-    for col in df.columns:
-        df.plot(x = df.index, y = col,title = col)
-        #plt.show()
-#test()
-#fillData(df, start, end)
+
 

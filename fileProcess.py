@@ -25,7 +25,6 @@ def extract_files(dataInRoot = "../Sessions"):
 def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withlabel = True):
     df_dict = {}
     label = ""
-    cnt_debug = 1
     if not (os.path.exists(dataOutRoot)):
         os.makedirs(dataOutRoot)
     for fname in os.listdir(dataInRoot):
@@ -38,7 +37,7 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
         label = df.iloc[0].iloc[-1]
         sensor = fname.split('.')[-3]
         #process file
-        df = dp.df_format(df, debug = debug)
+        df = dp.df_format(df, sensor, debug = debug)
         df = dp.df_resample(df, debug = debug)
         if (df.empty):
             continue
@@ -78,19 +77,6 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
     fname = "{}.resample.{}.data.csv".format(int(time.time()), label)
     df_concat.to_csv(os.path.join(dataOutRoot, fname))
     return df_concat, label
-#reorder files according to their labels
-'''def reorderFiles(dataInRoot = "../Sessions", dataOutRoot = "../clean_data/"):
-    # create the write data directory
-    dataframes = {}
-    for label in labels:
-        dataframes[label]={}
-        for sensor in sensors:
-            dataframes[label][f]=[]
-            dataOutRoot = os.path.join(dataOutRoot,label,f)
-            #if (os.path.exists(dataOutRoot)):
-            #   os.remove(dataOutRoot)
-            if not (os.path.exists(dataOutRoot)):
-                os.makedirs(dataOutRoot)'''
 
 def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "clean_data/", debug = False):
     #read files and truncate its head and tail
@@ -102,19 +88,10 @@ def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "clean_data/", debu
             df, label = get_dataframe(root, dataOutRoot, debug)
             df_list.append(df)
     return df_list
-    '''if (label in df_dict):
-        df_dict[label]=[]
-    df_dict[label].append(df)'''
-    '''df_total = []
-    for label in labels:
-        df_concat = pd.concat(df_dict[label])
-        df_total.append(df_concat)
-    return pd.concat(df_total)'''
-
         
                 
 
 #For unit testing                
 #extractFiles()
-get_dataframes(debug = False)
+#get_dataframes(debug = False)
 #getDataframe("../Sessions/14442D5DF8A8DC4_Mon_Feb_26_13-37_2018_PST/data",debug = True)
