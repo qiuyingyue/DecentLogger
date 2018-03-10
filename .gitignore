@@ -8,4 +8,7 @@
 ehthumbs.db
 Thumbs.db
 *.pyc
+model
+train_data
+test_data
 __pycache__

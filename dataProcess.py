@@ -51,12 +51,13 @@ def prepare_nn(df, win_size, step, freq = 10,  withlabel = True):
         np_matrixs.append(np_matrix)
     train_data = np.stack(np_matrixs)
 
-    dim = (len(np_matrixs), len(label_dict))    
+    dim = (len(np_matrixs), 1)    
     train_labels = np.zeros(dim)
     if (withlabel):
-        print(train_labels.shape, label)
-        for row in train_labels:
-            row[int(label)] = 1
+        for i in range(train_data.shape[0]):
+            train_labels[i] = int(label)
+    train_labels = train_labels.astype(int)
+    train_data =  train_data.astype(np.float32)
     return train_data, train_labels
     
         
