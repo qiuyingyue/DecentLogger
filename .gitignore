@@ -8,6 +8,6 @@
 ehthumbs.db
 Thumbs.db
 *.pyc
-
+*.npy
 
 __pycache__

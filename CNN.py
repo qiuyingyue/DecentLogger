@@ -3,6 +3,7 @@ import numpy as np
 import dataProcess as dp 
 import os
 import pandas as pd
+import classifierHelp as helper
 def cnn_model_fn(features, labels, mode):
     """Model function for CNN."""
     # Input Layer
@@ -111,7 +112,9 @@ def predict(data):
     pass
 
 def main():
-    path = "train_data"
+    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = True, method="cnn")
+    
+    '''path = "train_data"
     dfs = []
     for f in os.listdir(path):
         if f.endswith(".csv"):
@@ -126,10 +129,9 @@ def main():
             df = pd.read_csv(path + '/' + f, index_col = 0)
             dfs.append(df)
     print (len(dfs))
-    test_data, test_labels = dp.preprocess(dfs, method="cnn")
-    
+    test_data, test_labels = dp.preprocess(dfs, method="cnn")'''
     tf.logging.set_verbosity(tf.logging.INFO)
     
-    #train(train_data, train_labels)    
+    train(train_data, train_labels)    
     evaluate(test_data, test_labels)
 main()
