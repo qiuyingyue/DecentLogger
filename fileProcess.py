@@ -93,5 +93,5 @@ def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "clean_data/", debu
 
 #For unit testing                
 #extractFiles()
-#get_dataframes(debug = False)
+get_dataframes(dataOutRoot = "all_data/", debug = False)
 #getDataframe("../Sessions/14442D5DF8A8DC4_Mon_Feb_26_13-37_2018_PST/data",debug = True)
