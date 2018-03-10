@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np 
 import dataProcess as dp 
+import os
+import pandas as pd
 def cnn_model_fn(features, labels, mode):
     """Model function for CNN."""
     # Input Layer
@@ -72,15 +74,13 @@ def cnn_model_fn(features, labels, mode):
         mode=mode, loss=loss, eval_metric_ops=eval_metric_ops)
 
 
+
+
 # Create the Estimator
-cnn_classifier = tf.estimator.Estimator(
-    model_fn=cnn_model_fn, model_dir="model/convnet_model")
+cnn_classifier = tf.estimator.Estimator(model_fn=cnn_model_fn, model_dir="model/convnet_model")
 # Set up logging for predictions
 tensors_to_log = {"probabilities": "softmax_tensor"}
-logging_hook = tf.train.LoggingTensorHook(
-    tensors=tensors_to_log, every_n_iter=10)
-
-tf.logging.set_verbosity(tf.logging.INFO)
+logging_hook = tf.train.LoggingTensorHook(tensors=tensors_to_log, every_n_iter=10)
 def train(train_data, train_labels):
     #train_data, train_labels = dp.preprocess(df, method = "dnn")
     print (train_data.shape, train_labels.shape)
@@ -109,3 +109,27 @@ def evaluate(eval_data, eval_labels):
 
 def predict(data):
     pass
+
+def main():
+    path = "train_data"
+    dfs = []
+    for f in os.listdir(path):
+        if f.endswith(".csv"):
+            df = pd.read_csv(path + '/' + f, index_col = 0)
+            dfs.append(df)
+    print (len(dfs))
+    train_data, train_labels = dp.preprocess(dfs, method="cnn")    
+    path = "test_data"
+    dfs = []
+    for f in os.listdir(path):
+        if f.endswith(".csv"):
+            df = pd.read_csv(path + '/' + f, index_col = 0)
+            dfs.append(df)
+    print (len(dfs))
+    test_data, test_labels = dp.preprocess(dfs, method="cnn")
+    
+    tf.logging.set_verbosity(tf.logging.INFO)
+    
+    #train(train_data, train_labels)    
+    evaluate(test_data, test_labels)
+main()

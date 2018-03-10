@@ -1095,7 +1095,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\005\000\000\000\n\000\000\000\001\000\000\000\004\000\000\000"
+        tensor_content: "\005\000\000\000\005\000\000\000\001\000\000\000\004\000\000\000"
       }
     }
   }
@@ -1133,7 +1133,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: -0.1549193412065506
+        float_val: -0.21908901631832123
       }
     }
   }
@@ -1171,7 +1171,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: 0.1549193412065506
+        float_val: 0.21908901631832123
       }
     }
   }
@@ -1203,7 +1203,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -1291,7 +1291,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -1332,7 +1332,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -1365,7 +1365,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -1397,7 +1397,7 @@ node {
           size: 5
         }
         dim {
-          size: 10
+          size: 5
         }
         dim {
           size: 1
@@ -1443,7 +1443,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -1495,7 +1495,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -1964,7 +1964,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\005\000\000\000\n\000\000\000\004\000\000\000\010\000\000\000"
+        tensor_content: "\005\000\000\000\005\000\000\000\004\000\000\000\010\000\000\000"
       }
     }
   }
@@ -2002,7 +2002,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: -0.10000000149011612
+        float_val: -0.1414213627576828
       }
     }
   }
@@ -2040,7 +2040,7 @@ node {
         dtype: DT_FLOAT
         tensor_shape {
         }
-        float_val: 0.10000000149011612
+        float_val: 0.1414213627576828
       }
     }
   }
@@ -2072,7 +2072,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -2160,7 +2160,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -2201,7 +2201,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -2234,7 +2234,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -2266,7 +2266,7 @@ node {
           size: 5
         }
         dim {
-          size: 10
+          size: 5
         }
         dim {
           size: 4
@@ -2312,7 +2312,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -2364,7 +2364,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -8708,7 +8708,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\005\000\000\000\n\000\000\000\004\000\000\000\010\000\000\000"
+        tensor_content: "\005\000\000\000\005\000\000\000\004\000\000\000\010\000\000\000"
       }
     }
   }
@@ -8808,7 +8808,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -8936,7 +8936,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -9266,7 +9266,7 @@ node {
             size: 4
           }
         }
-        tensor_content: "\005\000\000\000\n\000\000\000\001\000\000\000\004\000\000\000"
+        tensor_content: "\005\000\000\000\005\000\000\000\001\000\000\000\004\000\000\000"
       }
     }
   }
@@ -9366,7 +9366,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -9494,7 +9494,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -9566,7 +9566,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -9653,7 +9653,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
@@ -12953,7 +12953,7 @@ node {
         dtype: DT_STRING
         tensor_shape {
         }
-        string_val: "_temp_ef854b70c2884c88b475d569220c834c/part"
+        string_val: "_temp_0bfa611630884185ba78e69cff7ceda4/part"
       }
     }
   }
@@ -13555,7 +13555,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 1
@@ -13846,7 +13846,7 @@ node {
             size: 5
           }
           dim {
-            size: 10
+            size: 5
           }
           dim {
             size: 4
