@@ -1,11 +1,15 @@
-import NNsolver #finish later
-import SVMsolver #finish later
-from dataProcess import dp
+#import NNsolver #finish later
+#import SVMsolver #finish later
+import os
+import dataProcess as dp
 import pandas as pd
 #public interface
-def train(df, method):
+def train(dfs, method):
     if (method is "SVM"): #example
-        SVMsolver.train(df)
+        df = dp.preprocess(dfs)
+        print (df.head())
+        #SVMsolver.train(df)
+    
 def test(method):
     pass
 
@@ -14,10 +18,17 @@ def test(method):
 
 #Usage: only for unit testing
 def main():
-    df1 = pd.read_csv("clean_data/xxx.csv")
-    df2 = pd.read_csv("clean_data/xxx.csv")
+    path = "clean_data"
+    files = os.listdir(path)
+    dfs = []
+    for file in files:
+        if not os.path.isdir(path + '/' + file) and file.endswith(".csv"):
+            df = pd.read_csv(path + '/' + file)
+            dfs.append(df)
+    print (len(dfs))
+    df = dp.preprocess(dfs)
+    print (len(df.index))
     # call preprocess function with needed parameters
     # def preprocess(dfs, method = "slides window", win_size = 5, step = 0.5)
-    df = dp.preprocess([df1, df2])
-    train(df)
+    #train(dfs, "SVM")
 main()
