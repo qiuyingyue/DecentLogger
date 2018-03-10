@@ -9,8 +9,8 @@ def train(dfs, method):
     if (method == "SVM"): #example
         df = dp.preprocess(dfs, "slides window")
         print(df.head())
-    elif (method == "DNN"):
-        train_data, train_label = dp.preprocess(dfs, method="dnn")
+    elif (method == "CNN"):
+        train_data, train_label = dp.preprocess(dfs, method="cnn")
         CNN.train(train_data, train_label)
         
     
@@ -18,8 +18,8 @@ def test(dfs, method):
     if (method == "SVM"): #example
         df = dp.preprocess(dfs, "slides window")
         print(df.head())
-    elif (method == "DNN"):
-        test_data, test_label = dp.preprocess(dfs, method="dnn")
+    elif (method == "CNN"):
+        test_data, test_label = dp.preprocess(dfs, method="cnn")
         CNN.evaluate(test_data, test_label)
 
 
