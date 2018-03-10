@@ -10,7 +10,6 @@ def main(argv):
             fp.extract_files(dataPath)
         traindataPath = argv[2]
         dfsTrain = fp.get_dataframes(dataPath) 
-        dfTrain = dp.preprocess(dfsTrain)
         solver.train(dfsTrain, method = "SVM") 
     elif (argv[1] is "test"):
         testdataPath = argv[2]
