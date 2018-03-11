@@ -49,7 +49,7 @@ def prepare_cnn(df, win_size, step, freq = 10,  withlabel = True):
     for i in range(0, total_rows, step_rows):
         if (i + win_rows >= total_rows):
             break
-        np_matrix = df[i: i + step_rows].values
+        np_matrix = df[i: i + win_rows].values
         np_matrixs.append(np_matrix)
     train_data = np.stack(np_matrixs)
 
