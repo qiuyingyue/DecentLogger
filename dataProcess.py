@@ -24,7 +24,7 @@ def preprocess(dfs, method = "slides window", win_size = 3, step = 0.2, withlabe
         list_data = []
         list_labels = []
         for df in dfs:
-            data, labels = prepare_cnn(df, win_size = 3, step = 0.2, withlabel = withlabel)
+            data, labels = prepare_cnn(df, win_size, step, withlabel = withlabel)
             list_data.append(data)
             list_labels.append(labels)
         x = np.concatenate(list_data)
