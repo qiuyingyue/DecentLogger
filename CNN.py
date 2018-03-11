@@ -112,7 +112,7 @@ def predict(data):
     pass
 
 def main():
-    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = True, method="cnn")
+    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, method="cnn")
     
     '''path = "train_data"
     dfs = []
