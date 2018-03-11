@@ -8,11 +8,11 @@ tf.set_random_seed(1)   # set random seed
 
 # hyperparameters
 lr = 0.001                  # learning rate
-max_steps = 2000            # train step upbound
+max_steps = 20000            # train step upbound
 batch_size = 100            
 n_inputs = 23               # input demensions
-n_steps = 100               # time steps
-n_hidden_units = 500        # neurons in hidden layer
+n_steps = 20               # time steps
+n_hidden_units = 20       # neurons in hidden layer
 n_classes = 4               
 
 
@@ -23,9 +23,11 @@ y = tf.placeholder(tf.int64,[None, 1])
 # initial weights biases
 weights = {
     # shape (23, 500)
-    'in': tf.Variable(tf.random_normal([n_inputs, n_hidden_units])),
+    'in': tf.get_variable(name='in', shape=(n_inputs, n_hidden_units), initializer=tf.orthogonal_initializer(),
+                dtype=tf.float32),
     # shape (500, 4)
-    'out': tf.Variable(tf.random_normal([n_hidden_units, n_classes]))
+    'out': tf.get_variable(name='out', shape=(n_hidden_units, n_classes), initializer=tf.orthogonal_initializer(),
+                dtype=tf.float32)
 }
 
 biases = {
@@ -33,16 +35,7 @@ biases = {
     'in': tf.Variable(tf.constant(0.1, shape=[n_hidden_units, ])),
     # shape (4, )
     'out': tf.Variable(tf.constant(0.1, shape=[n_classes, ]))
-}
-
-def save(sess):
-    saver = tf.train.Saver()
-    saver.save(sess, './model/rnn/', write_meta_graph=False)
-
-def restore(sess):
-    if os.path.exists('./model/rnn/'):
-        saver = tf.train.Saver()
-        saver.restore(sess, './model/rnn/')
+} 
 
 def RNN(X, weights, biases):
     # X ==> (100 batches * 60 steps, 23 inputs)
@@ -62,26 +55,28 @@ def RNN(X, weights, biases):
     results = tf.matmul(final_state[1], weights['out']) + biases['out']
 
     # change outputs into [(batch, outputs)..] * steps
-    if int((tf.__version__).split('.')[1]) < 12 and int((tf.__version__).split('.')[0]) < 1:
-        outputs = tf.unpack(tf.transpose(outputs, [1, 0, 2]))    # states is the last outputs
-    else:
-        outputs = tf.unstack(tf.transpose(outputs, [1, 0, 2]))
-    results = tf.matmul(outputs[-1], weights['out']) + biases['out']   
+    #if int((tf.__version__).split('.')[1]) < 12 and int((tf.__version__).split('.')[0]) < 1:
+    #    outputs = tf.unpack(tf.transpose(outputs, [1, 0, 2]))    # states is the last outputs
+    #else:
+    #    outputs = tf.unstack(tf.transpose(outputs, [1, 0, 2]))
+    #results = tf.matmul(outputs[-1], weights['out']) + biases['out'] 
     
     return results
 
 # compute cost and train_op
 pred = RNN(x, weights, biases)
-cost = tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(labels=y, logits=pred))
-train_op = tf.train.AdamOptimizer(lr).minimize(cost)
+cost = tf.losses.sparse_softmax_cross_entropy(labels=y, logits=pred)
+train_op = tf.train.AdamOptimizer(lr).minimize(loss=cost, global_step=tf.train.get_global_step())
+#train_op = tf.train.GradientDescentOptimizer(lr).minimize(loss=cost, global_step=tf.train.get_global_step())
 
-correct_pred = tf.equal(tf.argmax(pred, 1), y)
+correct_pred = tf.equal(tf.argmax(pred, 1), tf.reshape(y, [-1]))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-# outputlabel = tf.argmax(pred, 1)
+#outputlabel = tf.argmax(pred, 1)
+outputlabel = y
 
 with tf.Session() as sess:
-    restore(sess)
+    
     # tf.initialize_all_variables() no long valid from
     # 2017-03-02 if using tensorflow >= 0.12
     if int((tf.__version__).split('.')[1]) < 12 and int((tf.__version__).split('.')[0]) < 1:
@@ -90,9 +85,16 @@ with tf.Session() as sess:
         init = tf.global_variables_initializer()
     sess.run(init)
 
-    #train_x, test_x, train_y, test_y = help.generateTrainTest(preload = False, method="cnn")
-    data_x, data_y = help.generateData(preload=False, win_size=1, method="cnn")
-    train_x, test_x, train_y, test_y = train_test_split(data_x, data_y, test_size = 0.1, random_state = 42)
+
+    saver = tf.train.Saver()
+    if os.path.exists('./model/rnn/'):
+        model_file=tf.train.latest_checkpoint('./model/rnn/')
+        saver.restore(sess, model_file)
+    
+
+    train_x, test_x, train_y, test_y = help.generateTrainTest(preload=False, win_size=0.2, method="cnn")
+    #data_x, data_y = help.generateData(preload=False, win_size=0.5, method="cnn")
+    #train_x, test_x, train_y, test_y = train_test_split(data_x, data_y, test_size = 0.1, random_state = 42)
     
     final_index = train_x.shape[0] - train_x.shape[0] % batch_size
     train_x = train_x[:final_index]
@@ -104,6 +106,7 @@ with tf.Session() as sess:
     test_y = test_y.reshape((-1, 1))
 
     step = 0
+    
 
     while step < max_steps:
         sess.run([train_op], feed_dict={
@@ -115,8 +118,10 @@ with tf.Session() as sess:
             x: test_x,
             y: test_y,
             }))
+            
         step += 1
-    
+        if step % 500 == 0:
+            saver.save(sess, './model/rnn/my.ckpt', global_step=tf.train.get_global_step())
     
 
 
