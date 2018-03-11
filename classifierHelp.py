@@ -14,7 +14,7 @@ def evaluation(predictions, test_y):
     print ('Accuracy', 1-err_cnt/float(len(predictions)))
 
 
-def generateData(preload = True, method = "slides window", win_size = 3, step = 2):
+def generateData(preload = False, method = "slides window", win_size = 3, step = 2):
     path = "all_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         x = np.load(path + '/' + 'data.npy')
@@ -33,7 +33,7 @@ def generateData(preload = True, method = "slides window", win_size = 3, step = 
     #x = data.drop(df.columns[-1], axis=1).values
     return x, y
 
-def generateTrainTest(preload = True, method = "slides window", win_size = 3, step = 2):
+def generateTrainTest(preload = False, method = "slides window", win_size = 3, step = 2):
     path = "train_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         train_x = np.load(path + '/' + 'data.npy')
