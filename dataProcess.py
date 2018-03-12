@@ -11,7 +11,7 @@ from GLOBAL import label_dict
 #uwin_size: size of sliding window, unit is seconds
 #unit of freq is ms
 #step: the non-overlapping ratio of consecutive windows
-def preprocess(dfs, norm = True, method = "slides window", win_size = 3, step = 0.2, withlabel = True):
+def preprocess(dfs, norm, method, win_size, step, withlabel = True):
     '''if (method == "slides window"):
         dfs_new = []
         for df in dfs:
@@ -35,6 +35,7 @@ def preprocess(dfs, norm = True, method = "slides window", win_size = 3, step = 
             label = df['label'].values[0]
             df.drop(df.columns[-1], axis=1, inplace=True)
         if (norm):
+            print("normalize")
             df = normalize(df)
             
         if (method == "slides window"):
@@ -90,7 +91,6 @@ def prepare_cnn(df, win_size, step, freq = 10):
     for i in range(0, total_rows, step_rows):
         if (i + win_rows >= total_rows):
             break
-        
         np_matrix = df[i: i + win_rows].values
         np_matrixs.append(np_matrix)
     train_data = np.stack(np_matrixs)
@@ -98,10 +98,6 @@ def prepare_cnn(df, win_size, step, freq = 10):
     train_data =  train_data.astype(np.float32)
     return train_data
     
-        
-#unit of win_size is seconds
-#unit of freq is ms
-#step: the non-overlapping ratio of consecutive windows
 def sliding_window(df, win_size = 3, step = 0.2, freq = 10):
     #calculate parameters
     total_rows = len(df.index)
