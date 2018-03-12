@@ -59,14 +59,18 @@ def preprocess(dfs, norm = True, method = "slides window", win_size = 3, step = 
 
 def normalize(df):
     np_array = df.values
-    np_max = np.amax(np_array, axis=0)  
+    '''np_max = np.amax(np_array, axis=0)  
     np_min = np.amin(np_array, axis=0)
     np_diff = np_max - np_min
-    #np_diff = np.array([35, 170, 30,])
-    print(np_diff)
-    #print(np_min)
-    np_diff[-1]=1
-    np_array = np_array / np_diff
+    print(np_diff[4])'''
+    np_diff = np.array([156.96, 156.96, 156.96, #accelerator: 156.96
+    4915, 4915, 4915, #magnetic 4915.
+    360, 360, 360,   #orientation 360
+    34.9, 34.9, 34.9, #gyo: 34.9
+    19.6133, 19.6133, 19.6133, #gravity: 19.6133
+    19.6133, 19.6133, 19.6133, #linear aceleration: 19.6133
+    1, 1, 1, 1, 1])#rotation vector: 1   (5)
+    np_array = np_array/np_diff
     #print(np_array)
     new_df= pd.DataFrame(np_array, index = df.index, columns = df.columns)
     return new_df
