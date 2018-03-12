@@ -19,7 +19,6 @@ def preprocess(dfs, method = "slides window", win_size = 3, step = 0.2, withlabe
         y = df_concat['label'].values
         x = df_concat.drop(df_concat.columns[-1], axis=1).values
         print ("total shape:", df_concat.values.shape)
-        return x, y
     elif (method == "cnn"):
         list_data = []
         list_labels = []
@@ -29,9 +28,12 @@ def preprocess(dfs, method = "slides window", win_size = 3, step = 0.2, withlabe
             list_labels.append(labels)
         x = np.concatenate(list_data)
         y = np.concatenate(list_labels)
-        return x, y
 
+    x = normalize(x)
+    return x, y
 
+def normalize(features):
+    pass
 
 ###########PRIVATE INTERFACE################
 def prepare_cnn(df, win_size, step, freq = 10,  withlabel = True):
