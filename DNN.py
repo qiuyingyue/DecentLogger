@@ -8,10 +8,10 @@ import classifierHelp as help
 def DNN():
     # get data
 
-    # x, y = help.generateData()
-    # train_x, test_x, train_y, test_y = train_test_split(x, y, test_size = 0.33, random_state = 42)
+    x, y = help.generateData()
+    train_x, test_x, train_y, test_y = train_test_split(x, y, test_size = 0.33, random_state = 42)
     
-    train_x, test_x, train_y, test_y = help.generateTrainTest()
+    # train_x, test_x, train_y, test_y = help.generateTrainTest()
 
     train_y = train_y.astype(int)
     test_y = test_y.astype(int)

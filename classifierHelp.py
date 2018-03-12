@@ -14,7 +14,7 @@ def evaluation(predictions, test_y):
     print ('Accuracy', 1-err_cnt/float(len(predictions)))
 
 
-def generateData(preload = False, method = "slides window", win_size = 3, step = 0.2):
+def generateData(preload = False, norm = True, method = "slides window", win_size = 3, step = 0.2):
     path = "all_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         x = np.load(path + '/' + 'data.npy')
@@ -26,14 +26,14 @@ def generateData(preload = False, method = "slides window", win_size = 3, step =
             if file.endswith(".csv"):
                 df = pd.read_csv(path + '/' + file, index_col=0)
                 dfs.append(df)
-        x, y = dp.preprocess(dfs, method, win_size, step)
+        x, y = dp.preprocess(dfs, norm, method, win_size, step)
         np.save(path + '/' + "data", x)
         np.save(path + '/' + "labels", y)
     #y = data['label'].values
     #x = data.drop(df.columns[-1], axis=1).values
     return x, y
 
-def generateTrainTest(preload = False, method = "slides window", win_size = 3, step = 0.2):
+def generateTrainTest(preload = False, norm = True, method = "slides window", win_size = 3, step = 0.2):
     path = "train_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         train_x = np.load(path + '/' + 'data.npy')
@@ -45,7 +45,7 @@ def generateTrainTest(preload = False, method = "slides window", win_size = 3, s
             if file.endswith(".csv"):
                 df = pd.read_csv(path + '/' + file, index_col=0)
                 dfs.append(df)
-        train_x, train_y = dp.preprocess(dfs, method, win_size, step)
+        train_x, train_y = dp.preprocess(dfs, norm, method, win_size, step)
         np.save(path + '/' + "data", train_x)
         np.save(path + '/' + "labels", train_y)
     #train_y = train['label'].values
@@ -61,7 +61,7 @@ def generateTrainTest(preload = False, method = "slides window", win_size = 3, s
             if file.endswith(".csv"):
                 df = pd.read_csv(path + '/' + file, index_col=0)
                 dfs.append(df)
-        test_x, test_y = dp.preprocess(dfs, method, win_size, step)
+        test_x, test_y = dp.preprocess(dfs, norm, method, win_size, step)
         np.save(path + '/' + "data", test_x)
         np.save(path + '/' + "labels", test_y)
     #test_y = test['label'].values

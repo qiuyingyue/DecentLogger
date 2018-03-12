@@ -35,9 +35,9 @@ def cnn_model_fn(features, labels, mode):
     print("pool2:", pool2)
     
     # Dense Layer
-    pool2_flat = tf.reshape(pool2, [-1,   600])
+    pool2_flat = tf.reshape(pool2, [-1,  5* 600])
     print("pool2_flat:", pool2_flat)
-    dense = tf.layers.dense(inputs=pool2_flat, units=200, activation=tf.nn.relu)
+    dense = tf.layers.dense(inputs=pool2_flat, units=600, activation=tf.nn.relu)
     print("dense:", dense)
     dropout = tf.layers.dropout(
         inputs=dense, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
@@ -112,7 +112,7 @@ def predict(data):
     pass
 
 def main():
-    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, method="cnn")
+    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, method="3d")
     print (train_data.shape, train_labels.shape)
     '''path = "train_data"
     dfs = []

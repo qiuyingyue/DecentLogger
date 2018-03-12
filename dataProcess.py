@@ -2,108 +2,128 @@ import pandas as pd
 import numpy as np
 import time
 #import matplotlib.pyplot as plt
-
+import sys
 from GLOBAL import label_dict
 ###########PUBLIC INTERFACE##############
 #dfs: an array of dataframe
-#unit of win_size is seconds
+#norm: whether to normalize
+#method: 
+#uwin_size: size of sliding window, unit is seconds
 #unit of freq is ms
 #step: the non-overlapping ratio of consecutive windows
-def preprocess(dfs, method = "slides window", win_size = 3, step = 0.2, withlabel = True):
-    if (method == "slides window"):
+def preprocess(dfs, norm = True, method = "slides window", win_size = 3, step = 0.2, withlabel = True):
+    '''if (method == "slides window"):
         dfs_new = []
         for df in dfs:
-            df  = sliding_window(df, win_size = win_size, step = step, withlabel = withlabel)
+            if (withlabel):
+                labels = df['label'].values
+                df.drop(df.columns[-1], axis=1, inplace=True)
+                list_labels.append(labels)
+            if (norm):
+                df = normalize(df)
+            df  = sliding_window(df, win_size = win_size, step = step)
             dfs_new.append(df)
         df_concat = pd.concat(dfs_new)
         y = df_concat['label'].values
         x = df_concat.drop(df_concat.columns[-1], axis=1).values
-        print ("total shape:", df_concat.values.shape)
-        return x, y
-    elif (method == "cnn"):
-        list_data = []
-        list_labels = []
-        for df in dfs:
-            data, labels = prepare_cnn(df, win_size, step, withlabel = withlabel)
-            list_data.append(data)
-            list_labels.append(labels)
-        x = np.concatenate(list_data)
+        print ("total shape:", df_concat.values.shape)'''
+    
+    list_data = []
+    list_labels = []
+    for df in dfs:
+        if (withlabel):
+            label = df['label'].values[0]
+            df.drop(df.columns[-1], axis=1, inplace=True)
+        if (norm):
+            df = normalize(df)
+            
+        if (method == "slides window"):
+            data = sliding_window(df, win_size=win_size, step = step)
+        elif (method == "3d"):
+            data = prepare_cnn(df, win_size=win_size, step=step)
+        else:
+            print("Please specify correct method name: 'slides window' or '3d'")
+            sys.exit(0)
+        list_data.append(data)
+        if (withlabel):
+            list_labels.append(np.full(data.shape[0], label, int))
+    
+    x = np.concatenate(list_data)
+    print("final data dimention:", x.shape)
+    if (withlabel):
         y = np.concatenate(list_labels)
+        #print ("x,y,", x.shape, y.shape)
         return x, y
+    else:
+        return x
 
-
+def normalize(df):
+    np_array = df.values
+    '''np_max = np.amax(np_array, axis=0)  
+    np_min = np.amin(np_array, axis=0)
+    np_diff = np_max - np_min
+    print(np_diff[4])'''
+    np_diff = np.array([156.96, 156.96, 156.96, #accelerator: 156.96
+    4915, 4915, 4915, #magnetic 4915.
+    360, 360, 360,   #orientation 360
+    34.9, 34.9, 34.9, #gyo: 34.9
+    19.6133, 19.6133, 19.6133, #gravity: 19.6133
+    19.6133, 19.6133, 19.6133, #linear aceleration: 19.6133
+    1, 1, 1, 1, 1])#rotation vector: 1   (5)
+    np_array = np_array/np_diff
+    #print(np_array)
+    new_df= pd.DataFrame(np_array, index = df.index, columns = df.columns)
+    return new_df
+        
+    
 
 ###########PRIVATE INTERFACE################
-def prepare_cnn(df, win_size, step, freq = 10,  withlabel = True):
-    #drop label before concat
-    if (withlabel):
-        label = df.iloc[0].iloc[-1]
-        
-        df.drop(df.columns[-1], axis=1, inplace=True) 
-    #calculate parameters
-    total_rows = len(df.index)
-    win_rows = int(win_size * (1000 / freq))
-    step_rows = int(win_rows * step)
-
-    np_matrixs = []
-    for i in range(0, total_rows, step_rows):
-        if (i + win_rows >= total_rows):
-            break
-        np_matrix = df[i: i + win_rows].values
-        np_matrixs.append(np_matrix)
-    train_data = np.stack(np_matrixs)
-
-    dim = (len(np_matrixs), 1)    
-    train_labels = np.zeros(dim)
-    if (withlabel):
-        for i in range(train_data.shape[0]):
-            train_labels[i] = int(label)
-    train_labels = train_labels.astype(int)
-    train_data =  train_data.astype(np.float32)
-    return train_data, train_labels
-    
-        
-#unit of win_size is seconds
-#unit of freq is ms
-#step: the non-overlapping ratio of consecutive windows
-def sliding_window(df, win_size = 3, step = 0.2, freq = 10, withlabel = True):
-
-    #drop label before concat
-    if (withlabel):
-        label = df.iloc[0].iloc[-1]
-        df.drop(df.columns[-1], axis=1, inplace=True)
-
+def prepare_cnn(df, win_size, step, freq = 10):
     #calculate parameters
     total_rows = len(df.index)
     win_rows = int(win_size * (1000 / freq))
     step_rows = int(win_rows * step)
     #print ("win_rows",win_rows)
-    new_columns = list(df.columns.values) * win_rows
+    #print ("total_rows:",total_rows)
+    #print ("step_rows:",step_rows)
+    np_matrixs = []
+    for i in range(0, total_rows, step_rows):
+        if (i + win_rows >= total_rows):
+            break
+        
+        np_matrix = df[i: i + win_rows].values
+        np_matrixs.append(np_matrix)
+    train_data = np.stack(np_matrixs)
+    #print("in prepare cnn",train_data.shape)
+    train_data =  train_data.astype(np.float32)
+    return train_data
     
-
-    #create new dataframe
-    np_rows = []
+        
+#unit of win_size is seconds
+#unit of freq is ms
+#step: the non-overlapping ratio of consecutive windows
+def sliding_window(df, win_size = 3, step = 0.2, freq = 10):
+    #calculate parameters
+    total_rows = len(df.index)
+    win_rows = int(win_size * (1000 / freq))
+    step_rows = int(win_rows * step)
+    #print ("win_rows",win_rows)
     #print ("total_rows:",total_rows)
     #print ("step_rows:",step_rows)
     
+    #new_columns = list(df.columns.values) * win_rows
+    
+    #create new data matrix
+    np_rows = []
     for i in range(0, total_rows, step_rows):
-        
         j = i + win_rows
         if (j >= total_rows):
             break
         np_row = df.iloc[i: j].values.flatten()
-        #print(np_row[0].shape)
         np_rows.append(np_row)
-    matrix = np.stack(np_rows)
-    print ("shape:",matrix.shape)
-    df_new = pd.DataFrame(matrix, columns = new_columns)
-    
-    #add back label
-    if (withlabel):
-        df_new["label"] = pd.Series([label]*len(df_new.index), index = df_new.index) 
-
-    return df_new
-    #not tested yet
+    data_matrix = np.stack(np_rows)
+    #print ("shape:",data_matrix.shape)
+    return data_matrix
 
 #change label from string to integer
 def change_label(df, inplace = True):
