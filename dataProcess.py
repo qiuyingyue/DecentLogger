@@ -3,7 +3,7 @@ import numpy as np
 import time
 #import matplotlib.pyplot as plt
 import sys
-from GLOBAL import label_dict
+from GLOBAL import label_dict, sensors
 ###########PUBLIC INTERFACE##############
 #dfs: an array of dataframe
 #norm: whether to normalize
@@ -127,7 +127,8 @@ def change_label(df, inplace = True):
         df.replace(to_replace=label, value=label_dict[label], inplace=inplace)
     return df
 #change the format of the dataframe
-def df_format(df, sensor, inplace = True, debug = False, withlabel = True):
+def df_format(df, sensor, truncate = True, inplace = True, debug = False, withlabel = True):
+    
     #delete unused column 
     if (withlabel):
         df.drop(df.columns[-2], axis=1, inplace=inplace)
@@ -145,9 +146,10 @@ def df_format(df, sensor, inplace = True, debug = False, withlabel = True):
     df.set_index("time", inplace=inplace)
     
     #truncate start and end
-    start = int(df.index[0]) + 5 * 1000
-    end = int(df.index[-1]) - 8 * 1000
-    df = df[(df.index > start) & (df.index < end)]
+    if (truncate):
+        start = int(df.index[0]) + 8 * 1000
+        end = int(df.index[-1]) - 10 * 1000
+        df = df[(df.index > start) & (df.index < end)]
 
     #change index type to DateTimeIndex
     df.index = pd.to_datetime(df.index, unit='ms')

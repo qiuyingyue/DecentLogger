@@ -108,30 +108,22 @@ def evaluate(eval_data, eval_labels):
     eval_results = cnn_classifier.evaluate(input_fn=eval_input_fn)
     print(eval_results)
 
-def predict(data):
-    pass
+def predict(eval_data):
+    predict_input_fn = tf.estimator.inputs.numpy_input_fn(
+        x={"x": eval_data},
+        num_epochs=1,
+        shuffle=False)
+    cnn_classifier.predict(predict_input_fn)
 
-def main():
-    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, method="3d")
+
+if __name__ == '__main__':
+    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, win_size = 0.6, method="3d")
     print (train_data.shape, train_labels.shape)
-    '''path = "train_data"
-    dfs = []
-    for f in os.listdir(path):
-        if f.endswith(".csv"):
-            df = pd.read_csv(path + '/' + f, index_col = 0)
-            dfs.append(df)
-    print (len(dfs))
-    train_data, train_labels = dp.preprocess(dfs, method="cnn")    
-    path = "test_data"
-    dfs = []
-    for f in os.listdir(path):
-        if f.endswith(".csv"):
-            df = pd.read_csv(path + '/' + f, index_col = 0)
-            dfs.append(df)
-    print (len(dfs))
-    test_data, test_labels = dp.preprocess(dfs, method="cnn")'''
+   
     tf.logging.set_verbosity(tf.logging.INFO)
     
     train(train_data, train_labels)    
     evaluate(test_data, test_labels)
-main()
+    predict(eval_data)
+
+  

@@ -36,13 +36,14 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
         #get label and sensor before process
         label = df.iloc[0].iloc[-1]
         sensor = fname.split('.')[-3]
+        
+        if (sensor not in sensors):
+            continue
         #process file
         df = dp.df_format(df, sensor, debug = debug)
         df = dp.df_resample(df, debug = debug)
-        if (df.empty):
-            continue
         
-        #write to files
+        #Debug only: write to files
         for s in sensors:
             if (s in fname) and debug:
                 print (label, s)
@@ -93,5 +94,5 @@ def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "clean_data/", debu
 
 #For unit testing                
 #extractFiles()
-get_dataframes(dataOutRoot = "all_data/", debug = False)
+#get_dataframes(dataOutRoot = "all_data/", debug = False)
 #getDataframe("../Sessions/14442D5DF8A8DC4_Mon_Feb_26_13-37_2018_PST/data",debug = True)
