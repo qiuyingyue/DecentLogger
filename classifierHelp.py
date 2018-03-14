@@ -10,7 +10,7 @@ def evaluation(predictions, test_y):
     for i in range(len(predictions)):
         if predictions[i]!= test_y[i]:
             err_cnt+=1
-        print (predictions[i])
+        print (test_y[i])
     print ('Accuracy', 1-err_cnt/float(len(predictions)))
 
 

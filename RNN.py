@@ -92,9 +92,9 @@ with tf.Session() as sess:
         saver.restore(sess, model_file)
     
 
-    train_x, test_x, train_y, test_y = help.generateTrainTest(preload=False, win_size=0.2, method="cnn")
-    #data_x, data_y = help.generateData(preload=False, win_size=0.5, method="cnn")
-    #train_x, test_x, train_y, test_y = train_test_split(data_x, data_y, test_size = 0.1, random_state = 42)
+    #train_x, test_x, train_y, test_y = help.generateTrainTest(preload=False, win_size=0.2, method="3d")
+    data_x, data_y = help.generateData(preload=False, win_size=0.2, method="3d")
+    train_x, test_x, train_y, test_y = train_test_split(data_x, data_y, test_size = 0.2, random_state = 42)
     
     final_index = train_x.shape[0] - train_x.shape[0] % batch_size
     train_x = train_x[:final_index]
