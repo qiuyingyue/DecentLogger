@@ -4,6 +4,7 @@ import dataProcess as dp
 import os
 import pandas as pd
 import classifierHelp as helper
+from sklearn.metrics import confusion_matrix
 def cnn_model_fn(features, labels, mode):
     """Model function for CNN."""
     # Input Layer
@@ -35,7 +36,7 @@ def cnn_model_fn(features, labels, mode):
     print("pool2:", pool2)
     
     # Dense Layer
-    pool2_flat = tf.reshape(pool2, [-1,  5* 600])
+    pool2_flat = tf.reshape(pool2, [-1,   720])
     print("pool2_flat:", pool2_flat)
     dense = tf.layers.dense(inputs=pool2_flat, units=600, activation=tf.nn.relu)
     print("dense:", dense)
@@ -108,22 +109,28 @@ def evaluate(eval_data, eval_labels):
     eval_results = cnn_classifier.evaluate(input_fn=eval_input_fn)
     print(eval_results)
 
-def predict(eval_data):
+def predict(test_data, test_labels):
     predict_input_fn = tf.estimator.inputs.numpy_input_fn(
-        x={"x": eval_data},
+        x={"x": test_data},
         num_epochs=1,
         shuffle=False)
-    cnn_classifier.predict(predict_input_fn)
+    result = cnn_classifier.predict(predict_input_fn)
+    #print("result:", list(result))
+    predict_labels = []
+    for l in list(result):
+        #print(l['classes'])
+        predict_labels.append(l['classes'])
+    helper.evaluation(predict_labels, test_labels)
 
 
 if __name__ == '__main__':
-    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, win_size = 0.6, method="3d")
+    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = True, win_size = 0.6, method="3d")
     print (train_data.shape, train_labels.shape)
    
     tf.logging.set_verbosity(tf.logging.INFO)
     
     train(train_data, train_labels)    
-    evaluate(test_data, test_labels)
-    predict(eval_data)
+    #evaluate(test_data, test_labels)
+    predict(test_data, test_labels)
 
   

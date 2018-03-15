@@ -70,8 +70,10 @@ def normalize(df):
     34.9, 34.9, 34.9, #gyo: 34.9
     19.6133, 19.6133, 19.6133, #gravity: 19.6133
     19.6133, 19.6133, 19.6133, #linear aceleration: 19.6133
-    1, 1, 1, 1, 1])#rotation vector: 1   (5)
+    1, 1, 1, 1, 1, #rotation vector: 1   (5)
+    1])#step counter
     np_array = np_array/np_diff
+    np_array[:,-1] = np_array[:,-1]-np_array[0][-1]
     #print(np_array)
     new_df= pd.DataFrame(np_array, index = df.index, columns = df.columns)
     return new_df
@@ -126,6 +128,8 @@ def change_label(df, inplace = True):
     for label in label_dict:
         df.replace(to_replace=label, value=label_dict[label], inplace=inplace)
     return df
+
+
 #change the format of the dataframe
 def df_format(df, sensor, truncate = True, inplace = True, debug = False, withlabel = True):
     
@@ -161,6 +165,7 @@ def df_format(df, sensor, truncate = True, inplace = True, debug = False, withla
 #unit of freq: ms
 def df_resample(df, freq = 10, inplace = True, debug = False):
     if (df.empty):
+        print (df)
         return df
     if (debug):
         print("\nBefore resample:\n", df.iloc[0:10])

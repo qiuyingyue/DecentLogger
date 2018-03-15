@@ -39,8 +39,11 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
         
         if (sensor not in sensors):
             continue
+
+        
         #process file
         df = dp.df_format(df, sensor, debug = debug)
+        
         df = dp.df_resample(df, debug = debug)
         
         #Debug only: write to files
@@ -55,6 +58,7 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
         if (withlabel):
             df.drop(df.columns[-1], axis=1, inplace=True)
 
+        
         df_dict[sensor] = df
         
     #ensure the order of sensor files  
@@ -63,10 +67,15 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
     print("df_dict", df_dict.keys())  
     dfs = []
     for sensor in sensors:
-        if (sensor in df_dict):
+        if (sensor in df_dict and sensor != "step_counter"):
             dfs.append(df_dict[sensor])
     #merge files with different sensors into one file
-    df_concat = pd.concat(dfs, axis=1, join='inner') 
+    df_concat = pd.concat(dfs, axis=1, join='inner')
+    df_concat = df_concat.join(df_dict["step_counter"], how="left") 
+    #print ("Before",df_concat.head())
+    df_concat.interpolate(method='time',  axis=0, inplace=True)
+    df_concat = df_concat.fillna(0)
+    #print ("After",df_concat.head())
 
     #add back label
     if (withlabel):

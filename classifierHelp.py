@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import dataProcess as dp
+from sklearn.metrics import confusion_matrix
 
 def evaluation(predictions, test_y):
     ## evaluation
@@ -10,11 +11,13 @@ def evaluation(predictions, test_y):
     for i in range(len(predictions)):
         if predictions[i]!= test_y[i]:
             err_cnt+=1
-        print (test_y[i])
+        #print (test_y[i])
     print ('Accuracy', 1-err_cnt/float(len(predictions)))
+    cf = confusion_matrix(test_y, predictions, labels=[0, 1, 2, 3])
+    print("Confusion matrix:\n", cf) # confusion matrix: columns- prediction; rows- truth value
 
 
-def generateData(preload = False, norm = True, method = "slides window", win_size = 3, step = 0.2):
+def generateData(preload = False, norm = True, method = "slides window", win_size = 0.6, step = 0.2):
     path = "all_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         x = np.load(path + '/' + 'data.npy')
@@ -33,7 +36,7 @@ def generateData(preload = False, norm = True, method = "slides window", win_siz
     #x = data.drop(df.columns[-1], axis=1).values
     return x, y
 
-def generateTrainTest(preload = False, norm = True, method = "slides window", win_size = 3, step = 0.2):
+def generateTrainTest(preload = False, norm = True, method = "slides window", win_size = 0.6, step = 0.2):
     path = "train_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         train_x = np.load(path + '/' + 'data.npy')
