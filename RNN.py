@@ -10,9 +10,9 @@ tf.set_random_seed(1)   # set random seed
 lr = 0.001                  # learning rate
 max_steps = 20000            # train step upbound
 batch_size = 100            
-n_inputs = 23               # input demensions
-n_steps = 20               # time steps
-n_hidden_units = 20       # neurons in hidden layer
+n_inputs = 24               # input demensions
+n_steps = 100               # time steps
+n_hidden_units = 30       # neurons in hidden layer
 n_classes = 4               
 
 
@@ -45,7 +45,7 @@ def RNN(X, weights, biases):
     X_in = tf.matmul(X, weights['in']) + biases['in']
     # X_in ==> (100 batches, 60 steps, 500 hidden)
     X_in = tf.reshape(X_in, [-1, n_steps, n_hidden_units])
-    lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden_units, forget_bias=1.0, state_is_tuple=True)
+    lstm_cell = tf.contrib.rnn.BasicLSTMCell(n_hidden_units, forget_bias=0.0, state_is_tuple=True)
     init_state = lstm_cell.zero_state(tf.shape(X_in)[0], dtype=tf.float32) # initial state as zero
     
     # if inputs is (batches, steps, inputs), time_major = false
@@ -72,8 +72,8 @@ train_op = tf.train.AdamOptimizer(lr).minimize(loss=cost, global_step=tf.train.g
 correct_pred = tf.equal(tf.argmax(pred, 1), tf.reshape(y, [-1]))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
-#outputlabel = tf.argmax(pred, 1)
-outputlabel = y
+outputlabel = tf.argmax(pred, 1)
+#outputlabel = y
 
 with tf.Session() as sess:
     
@@ -92,9 +92,9 @@ with tf.Session() as sess:
         saver.restore(sess, model_file)
     
 
-    #train_x, test_x, train_y, test_y = help.generateTrainTest(preload=False, win_size=0.2, method="3d")
-    data_x, data_y = help.generateData(preload=False, win_size=0.2, method="3d")
-    train_x, test_x, train_y, test_y = train_test_split(data_x, data_y, test_size = 0.2, random_state = 42)
+    train_x, test_x, train_y, test_y = help.generateTrainTest(preload=False, win_size=1, method="3d")
+    #data_x, data_y = help.generateData(preload=False, win_size=0.2, method="3d")
+    #train_x, test_x, train_y, test_y = train_test_split(data_x, data_y, test_size = 0.2, random_state = 42)
     
     final_index = train_x.shape[0] - train_x.shape[0] % batch_size
     train_x = train_x[:final_index]
@@ -109,15 +109,19 @@ with tf.Session() as sess:
     
 
     while step < max_steps:
-        sess.run([train_op], feed_dict={
+        '''sess.run([train_op], feed_dict={
             x: train_x[step % train_x.shape[0]],
             y: train_y[step % train_y.shape[0]],
-        })
+        })'''
         if step % 20 == 0:
             print(sess.run(accuracy, feed_dict={
             x: test_x,
             y: test_y,
-            }))
+            })) 
+            help.evaluation(sess.run(outputlabel,  feed_dict={
+            x: test_x,
+            y: test_y,
+            }), test_y.reshape(-1))
             
         step += 1
         if step % 500 == 0:
