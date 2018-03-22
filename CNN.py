@@ -124,12 +124,12 @@ def predict(test_data, test_labels):
 
 
 if __name__ == '__main__':
-    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = True, win_size = 0.6, method="3d")
+    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, win_size = 0.2, method="3d")
     print (train_data.shape, train_labels.shape)
    
     tf.logging.set_verbosity(tf.logging.INFO)
     
-    train(train_data, train_labels)    
+    #train(train_data, train_labels)    
     #evaluate(test_data, test_labels)
     predict(test_data, test_labels)
 

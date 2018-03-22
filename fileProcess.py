@@ -62,9 +62,6 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
         df_dict[sensor] = df
         
     #ensure the order of sensor files  
-    print("sensors", sensors)
-
-    print("df_dict", df_dict.keys())  
     dfs = []
     for sensor in sensors:
         if (sensor in df_dict and sensor != "step_counter"):

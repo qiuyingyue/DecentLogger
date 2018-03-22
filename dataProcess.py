@@ -12,22 +12,6 @@ from GLOBAL import label_dict, sensors
 #unit of freq is ms
 #step: the non-overlapping ratio of consecutive windows
 def preprocess(dfs, norm, method, win_size, step, withlabel = True):
-    '''if (method == "slides window"):
-        dfs_new = []
-        for df in dfs:
-            if (withlabel):
-                labels = df['label'].values
-                df.drop(df.columns[-1], axis=1, inplace=True)
-                list_labels.append(labels)
-            if (norm):
-                df = normalize(df)
-            df  = sliding_window(df, win_size = win_size, step = step)
-            dfs_new.append(df)
-        df_concat = pd.concat(dfs_new)
-        y = df_concat['label'].values
-        x = df_concat.drop(df_concat.columns[-1], axis=1).values
-        print ("total shape:", df_concat.values.shape)'''
-    
     list_data = []
     list_labels = []
     for df in dfs:
@@ -38,12 +22,12 @@ def preprocess(dfs, norm, method, win_size, step, withlabel = True):
             print("normalize")
             df = normalize(df)
             
-        if (method == "slides window"):
+        if (method == "2d"):
             data = sliding_window(df, win_size=win_size, step = step)
         elif (method == "3d"):
             data = prepare_cnn(df, win_size=win_size, step=step)
         else:
-            print("Please specify correct method name: 'slides window' or '3d'")
+            print("Please specify correct method name: '2d' or '3d'")
             sys.exit(0)
         list_data.append(data)
         if (withlabel):
@@ -164,7 +148,7 @@ def df_format(df, sensor, truncate = True, inplace = True, debug = False, withla
 
 #resample the data according to the frequency
 #unit of freq: ms
-def df_resample(df, freq = 10, inplace = True, debug = False):
+def df_resample(df, freq = 8, inplace = True, debug = False):
     if (df.empty):
         print (df)
         return df
@@ -191,7 +175,7 @@ def df_resample(df, freq = 10, inplace = True, debug = False):
 
     #downsample to 10ms (delete the time index not divisible by 10 ms)
     #drop first row and last row which cannot be interpoated
-    df = df.resample('10ms').asfreq()
+    df = df.resample(str(freq)+'ms').asfreq()
     df.drop(df.index[0], inplace=inplace)
     df.drop(df.index[-1], inplace=inplace)
 

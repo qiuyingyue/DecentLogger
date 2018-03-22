@@ -17,7 +17,7 @@ def evaluation(predictions, test_y):
     print("Confusion matrix:\n", cf) # confusion matrix: columns- prediction; rows- truth value
 
 
-def generateData(preload = False, norm = True, method = "slides window", win_size = 0.6, step = 0.2):
+def generateData(preload = False, norm = True, method = "2d", win_size = 0.6, step = 0.2):
     path = "all_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         x = np.load(path + '/' + 'data.npy')
@@ -36,7 +36,7 @@ def generateData(preload = False, norm = True, method = "slides window", win_siz
     #x = data.drop(df.columns[-1], axis=1).values
     return x, y
 
-def generateTrainTest(preload = False, norm = True, method = "slides window", win_size = 0.6, step = 0.2):
+def generateTrainTest(preload = False, norm = True, method = "2d", win_size = 0.6, step = 0.2):
     path = "train_data"
     if preload and (os.path.exists(path + '/' + 'data.npy') and os.path.exists(path + '/' + 'labels.npy')):
         train_x = np.load(path + '/' + 'data.npy')
