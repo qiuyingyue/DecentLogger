@@ -134,7 +134,7 @@ if __name__ == '__main__':
         train(train_data, train_labels) 
         predict(test_data, test_labels)   
     #evaluate(test_data, test_labels)
-    if (sys.argv[2]=='-test'):
+    if (sys.argv[1]=='-test'):
         predict(test_data, test_labels)
 
   
