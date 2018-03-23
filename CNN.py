@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import classifierHelp as helper
 from sklearn.metrics import confusion_matrix
+import sys
 def cnn_model_fn(features, labels, mode):
     """Model function for CNN."""
     # Input Layer
@@ -36,7 +37,7 @@ def cnn_model_fn(features, labels, mode):
     print("pool2:", pool2)
     
     # Dense Layer
-    pool2_flat = tf.reshape(pool2, [-1,   720])
+    pool2_flat = tf.reshape(pool2, [-1,  2* 600])
     print("pool2_flat:", pool2_flat)
     dense = tf.layers.dense(inputs=pool2_flat, units=600, activation=tf.nn.relu)
     print("dense:", dense)
@@ -79,7 +80,7 @@ def cnn_model_fn(features, labels, mode):
 
 
 # Create the Estimator
-cnn_classifier = tf.estimator.Estimator(model_fn=cnn_model_fn, model_dir="model/convnet_model")
+cnn_classifier = tf.estimator.Estimator(model_fn=cnn_model_fn, model_dir="model/convnet_model_1s")
 # Set up logging for predictions
 tensors_to_log = {"probabilities": "softmax_tensor"}
 logging_hook = tf.train.LoggingTensorHook(tensors=tensors_to_log, every_n_iter=10)
@@ -96,7 +97,7 @@ def train(train_data, train_labels):
         shuffle=True)
     cnn_classifier.train(
         input_fn=train_input_fn,
-        steps=3000,
+        steps=15000,
         hooks=[logging_hook])
 
 def evaluate(eval_data, eval_labels):
@@ -124,13 +125,16 @@ def predict(test_data, test_labels):
 
 
 if __name__ == '__main__':
-    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, win_size = 0.2, method="3d")
+    train_data, test_data, train_labels, test_labels = helper.generateTrainTest(preload = False, win_size = 1.0, method="3d")
     print (train_data.shape, train_labels.shape)
    
     tf.logging.set_verbosity(tf.logging.INFO)
     
-    #train(train_data, train_labels)    
+    if (sys.argv[1]=='-train'):
+        train(train_data, train_labels) 
+        predict(test_data, test_labels)   
     #evaluate(test_data, test_labels)
-    predict(test_data, test_labels)
+    if (sys.argv[2]=='-test'):
+        predict(test_data, test_labels)
 
   
