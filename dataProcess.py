@@ -57,7 +57,7 @@ def normalize(df):
     1, 1, 1, 1, 1, #rotation vector: 1   (5)
     1])#step counter
     np_array = np_array/np_diff
-    np_array[:,-1] = np_array[:,-1]-np_array[0][-1]
+    #np_array[:,-1] = np_array[:,-1]-np_array[0][-1]
     #print(np_array)
     new_df= pd.DataFrame(np_array, index = df.index, columns = df.columns)
     return new_df
@@ -78,7 +78,7 @@ def prepare_cnn(df, win_size, step, freq = 10):
         if (i + win_rows >= total_rows):
             break
         np_matrix = df[i: i + win_rows].values
-        
+        np_matrix[:,-1] = np_matrix[:,-1]-np_matrix[0][-1]
         np_matrixs.append(np_matrix)
     train_data = np.stack(np_matrixs)
     #print("in prepare cnn",train_data.shape)
@@ -102,7 +102,9 @@ def sliding_window(df, win_size = 3, step = 0.2, freq = 10):
         j = i + win_rows
         if (j >= total_rows):
             break
-        np_row = df.iloc[i: j].values.flatten()
+        np_matrix = df[i: j].values
+        np_matrix[:,-1] = np_matrix[:,-1]-np_matrix[0][-1]
+        np_row = np_matrix.flatten()
         np_rows.append(np_row)
     data_matrix = np.stack(np_rows)
     #print ("shape:",data_matrix.shape)

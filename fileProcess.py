@@ -22,7 +22,7 @@ def extract_files(dataInRoot = "../Sessions"):
                         shutil.copyfileobj(f_in, f_out)
                         print ('extract', fname, 'to' ,newfname)
                         os.remove(os.path.join(root,fname)) 
-def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withlabel = True):
+def get_dataframe(dataInRoot, dataOutRoot = "all_data/", debug = False, withlabel = True):
     df_dict = {}
     label = ""
     if not (os.path.exists(dataOutRoot)):
@@ -85,7 +85,7 @@ def get_dataframe(dataInRoot, dataOutRoot = "clean_data/", debug = False, withla
     df_concat.to_csv(os.path.join(dataOutRoot, fname))
     return df_concat, label
 
-def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "clean_data/", debug = False):
+def get_dataframes(dataInRoot = "../Sessions", dataOutRoot = "all_data/", debug = False):
     #read files and truncate its head and tail
     for root, dirs, files in os.walk(dataInRoot):
         path = root.split(os.sep)
